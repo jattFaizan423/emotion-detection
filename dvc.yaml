@@ -33,15 +33,16 @@ stages:
     - data/features_data
     - src/model/model_building.py
     outs:
-    - data/model.pkl
+    - models/model_tfidf.pkl
     params:
     - model_building.n_estimators
   
   model_evaluation:
     cmd: python src/model/model_evaluation.py
     deps:
-      - data/model.pkl
+      - models/model_tfidf.pkl
       - src/model/model_evaluation.py
+      - models/model_tfidf.pkl               
     metrics:
       - metrics.json:
           cache: false

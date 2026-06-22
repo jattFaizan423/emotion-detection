@@ -5,7 +5,8 @@ import yaml
 import logging
 from typing import Tuple
 from scipy.sparse import csr_matrix
-from sklearn.feature_extraction.text import CountVectorizer
+# CHANGE 1: CountVectorizer ki jagah TfidfVectorizer import kiya
+from sklearn.feature_extraction.text import TfidfVectorizer
 
 
 class FeatureEngineering:
@@ -25,7 +26,8 @@ class FeatureEngineering:
 
         self.logger: logging.Logger = self._setup_logger()
         self.max_features: int | None = None
-        self.vectorizer: CountVectorizer | None = None
+        # CHANGE 2: Type hint ko TfidfVectorizer kiya
+        self.vectorizer: TfidfVectorizer | None = None
 
     # ---------------- LOGGER ----------------
     def _setup_logger(self) -> logging.Logger:
@@ -86,24 +88,26 @@ class FeatureEngineering:
             self.logger.error("Missing required columns")
             raise
 
-    # ---------------- VECTORIZATION ----------------
-    def apply_bow(
+    # ---------------- TF-IDF VECTORIZATION ----------------
+    # CHANGE 3: Method ka naam aur vectorizer badal diya
+    def apply_tfidf(
         self,
         X_train: np.ndarray,
         X_test: np.ndarray
     ) -> Tuple[csr_matrix, csr_matrix]:
         try:
-            self.logger.info("Applying CountVectorizer")
+            self.logger.info("Applying TfidfVectorizer")
 
-            self.vectorizer = CountVectorizer(max_features=self.max_features)
+            # CountVectorizer ki jagah TfidfVectorizer initialize kiya
+            self.vectorizer = TfidfVectorizer(max_features=self.max_features)
 
-            X_train_bow: csr_matrix = self.vectorizer.fit_transform(X_train)
-            X_test_bow: csr_matrix = self.vectorizer.transform(X_test)
+            X_train_tfidf: csr_matrix = self.vectorizer.fit_transform(X_train)
+            X_test_tfidf: csr_matrix = self.vectorizer.transform(X_test)
 
-            return X_train_bow, X_test_bow
+            return X_train_tfidf, X_test_tfidf
 
         except Exception:
-            self.logger.exception("Error in vectorization")
+            self.logger.exception("Error in TF-IDF vectorization")
             raise
 
     # ---------------- CONVERT TO DF ----------------
@@ -122,12 +126,13 @@ class FeatureEngineering:
             raise
 
     # ---------------- SAVE ----------------
+    # CHANGE 4: Output files ke naam *_tfidf.csv kar diye version 2 ke liye
     def save_data(self, train_df: pd.DataFrame, test_df: pd.DataFrame) -> None:
         try:
             os.makedirs(self.output_dir, exist_ok=True)
 
-            train_path: str = os.path.join(self.output_dir, "train_bow.csv")
-            test_path: str = os.path.join(self.output_dir, "test_bow.csv")
+            train_path: str = os.path.join(self.output_dir, "train_tfidf.csv")
+            test_path: str = os.path.join(self.output_dir, "test_tfidf.csv")
 
             train_df.to_csv(train_path, index=False)
             test_df.to_csv(test_path, index=False)
@@ -141,7 +146,7 @@ class FeatureEngineering:
     # ---------------- PIPELINE ----------------
     def run(self) -> None:
         try:
-            self.logger.info("Feature Engineering Pipeline Started")
+            self.logger.info("Feature Engineering Pipeline (TF-IDF) Started")
 
             self.load_params()
 
@@ -150,10 +155,11 @@ class FeatureEngineering:
             X_train, y_train = self.split_features_labels(train_data)
             X_test, y_test = self.split_features_labels(test_data)
 
-            X_train_bow, X_test_bow = self.apply_bow(X_train, X_test)
+            # CHANGE 5: Naye method ko call kiya
+            X_train_tfidf, X_test_tfidf = self.apply_tfidf(X_train, X_test)
 
-            train_df = self.convert_to_dataframe(X_train_bow, y_train)
-            test_df = self.convert_to_dataframe(X_test_bow, y_test)
+            train_df = self.convert_to_dataframe(X_train_tfidf, y_train)
+            test_df = self.convert_to_dataframe(X_test_tfidf, y_test)
 
             self.save_data(train_df, test_df)
 

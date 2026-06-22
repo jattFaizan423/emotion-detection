@@ -12,8 +12,9 @@ class ModelEvaluator:
 
     def __init__(
         self,
-        model_path: str = "data/model.pkl",
-        test_path: str = "./data/features_data/test_bow.csv",
+        # CHANGE 1: Naye model aur test data paths ko default set kiya
+        model_path: str = "models/model_tfidf.pkl",
+        test_path: str = "./data/features_data/test_tfidf.csv",
         output_path: str = "metrics.json"
     ) -> None:
 
@@ -137,5 +138,6 @@ class ModelEvaluator:
 
 # ---------------- RUN ----------------
 if __name__ == "__main__":
+    # CHANGE 2: Initializer ab directly updated class defaults ko use karega
     evaluator: ModelEvaluator = ModelEvaluator()
     evaluator.run()

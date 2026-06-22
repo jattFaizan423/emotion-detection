@@ -14,7 +14,7 @@ class ModelTrainer:
         self,
         train_path: str,
         params_path: str = "params.yaml",
-        model_dir: str = "data"
+        model_dir: str = "models"  # CHANGE 1: 'data' ki jagah standard 'models' directory rakhna behtar hai
     ) -> None:
 
         self.train_path: str = train_path
@@ -104,7 +104,8 @@ class ModelTrainer:
         try:
             os.makedirs(self.model_dir, exist_ok=True)
 
-            model_path: str = os.path.join(self.model_dir, "model.pkl")
+            # CHANGE 2: Model ka naam model_tfidf.pkl rakh diya taake confusion na ho
+            model_path: str = os.path.join(self.model_dir, "model_tfidf.pkl")
 
             with open(model_path, "wb") as f:
                 pickle.dump(self.model, f)
@@ -139,7 +140,8 @@ class ModelTrainer:
 
 # ---------------- RUN ----------------
 if __name__ == "__main__":
+    # CHANGE 3: Path badal kar 'train_bow.csv' se 'train_tfidf.csv' kar diya hai
     trainer: ModelTrainer = ModelTrainer(
-        train_path="./data/features_data/train_bow.csv"
+        train_path="./data/features_data/train_tfidf.csv"
     )
     trainer.run()

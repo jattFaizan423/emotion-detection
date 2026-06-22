@@ -44,50 +44,54 @@ stages:
       nfiles: 2
     - path: src/features/feature_engineering.py
       hash: md5
-      md5: 40f0633c73444e1fb98f39f559ab1bc5
-      size: 5640
+      md5: 2000189948ae49df070b49a3e1be83b4
+      size: 6065
     params:
       params.yaml:
         feature_engineering.max_features: 50
     outs:
     - path: data/features_data
       hash: md5
-      md5: 1003b943321c3dfb6da2d3f6de21c595.dir
-      size: 1008046
+      md5: f24a2356f485b86a2df14dc07e0eafbe.dir
+      size: 2197139
       nfiles: 2
   model_building:
     cmd: python src/model/model_building.py
     deps:
     - path: data/features_data
       hash: md5
-      md5: 1003b943321c3dfb6da2d3f6de21c595.dir
-      size: 1008046
+      md5: f24a2356f485b86a2df14dc07e0eafbe.dir
+      size: 2197139
       nfiles: 2
     - path: src/model/model_building.py
       hash: md5
-      md5: 173e44bb1e5c8b8708fc7c2709926857
-      size: 4321
+      md5: 27222feb73ef11bdc906edc97235d052
+      size: 4575
     params:
       params.yaml:
         model_building.n_estimators: 100
     outs:
-    - path: data/model.pkl
+    - path: models/model_tfidf.pkl
       hash: md5
-      md5: 3559a37e2b8cf7bab112f890432b6688
-      size: 136461
+      md5: 1d1cd61a7853b90f8abda87fc01decd3
+      size: 132717
   model_evaluation:
     cmd: python src/model/model_evaluation.py
     deps:
-    - path: data/model.pkl
+    - path: models/model_tfidf.pkl
       hash: md5
-      md5: 3559a37e2b8cf7bab112f890432b6688
-      size: 136461
+      md5: 1d1cd61a7853b90f8abda87fc01decd3
+      size: 132717
+    - path: models/model_tfidf.pkl
+      hash: md5
+      md5: 1d1cd61a7853b90f8abda87fc01decd3
+      size: 132717
     - path: src/model/model_evaluation.py
       hash: md5
-      md5: cf9eaa9cf29df9644f3b5f82f862a8bb
-      size: 4397
+      md5: be4353b0fe11e98b8652547463ea95e6
+      size: 4557
     outs:
     - path: metrics.json
       hash: md5
-      md5: d22a5b6ab481bb0839ce7ee7d9c35b9f
+      md5: 7d8879bbcded58d03a9c8cf762f551f4
       size: 145
