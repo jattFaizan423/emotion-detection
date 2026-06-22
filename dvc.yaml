@@ -28,20 +28,20 @@ stages:
       - feature_engineering.max_features
 
   model_building:
-    cmd: python src/models/model_building.py
+    cmd: python src/model/model_building.py
     deps:
     - data/features_data
-    - src/models/model_building.py
+    - src/model/model_building.py
     outs:
     - data/model.pkl
     params:
     - model_building.n_estimators
   
   model_evaluation:
-    cmd: python src/models/model_evaluation.py
+    cmd: python src/model/model_evaluation.py
     deps:
       - data/model.pkl
-      - src/models/model_evaluation.py
+      - src/model/model_evaluation.py
     metrics:
       - metrics.json:
           cache: false
